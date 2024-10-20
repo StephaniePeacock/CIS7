@@ -27,9 +27,9 @@ int main(int argc, char** argv) {
     int code[4];                        //Code we have to Guess
     int guess[4];                       //Our Guesses
     bool match = false;                 //So we can end the game
-
-    
+   
     generate(code);                     //Create a code
+    cout << "Welcome to Mastermind. Can you break the code?" << endl;
     while(!match){                      //Loop runs until we get all 4
         make(guess);                    //Make a Guess
         match = check(code,guess);      //See if all 4 are correct
@@ -41,8 +41,8 @@ int main(int argc, char** argv) {
 //create a random code
 void generate(int code[]){
     for(int i = 0; i < 4; i++){
-        code[i] = rand()%10;        cout << code[i] << " ";     //for testing
-    }                               cout << endl;               //for testing
+        code[i] = rand()%10;     //   cout << code[i] << " ";     //for testing
+    }                            //   cout << endl;               //for testing
 }
 
 //make a guess
@@ -75,42 +75,47 @@ void make(int guess[]) {
     }
 }
 
-bool check(const int code[], const int guess[]){
-    bool exact[4]   = {false};      //Exact matches - default is false
-    bool partial[4] = {false};      //Partial matches - default is false
-    bool match = true;              //All 4 match - default true, change if not
-    bool found = false;
+bool check(const int code[], const int guess[]) {
+    bool exact[4] = {false};        // Exact matches - default is false
+    bool partial[4] = {false};      // Partial matches - default is false
+    int count[4] = {0};             // To track how many times a number is present in the code
+    bool match = true;              // All 4 match - default true, change if not
     
-    //Check if we have any exact matches
-    for(int i = 0; i < 4; i++){      
-        if(guess[i] == code[i]){
-            exact[i] = true;        //Set current exact to true
-        }
-        else {
-            match = false;          //No exact match, set match to false to prompt for retry
+    // Check if we have any exact matches
+    for (int i = 0; i < 4; i++) {
+        if (guess[i] == code[i]) {
+            exact[i] = true;        // Set current exact to true
+        } else {
+            match = false;          // No exact match, set match to false to prompt for retry
         }
     }
-    //Check for partial matches
+
+    // Count occurrences of each number in the code
     for (int i = 0; i < 4; i++) {
-        if (!exact[i]) { // Only check if it's not an exact match
-            for (int n = 0; (n < 4 && !found); n++) {
-                // Check for partial matches only for unmatched indices
-                if (guess[i] == code[n] && !exact[n]) {
-                    partial[i] = true;  // Mark partial match
-                    found = true;       // Stop checking after a match is found
+        for (int n = 0; n < 4; n++) {
+            if (code[i] == code[n]) {
+                count[i]++;         // Count the number of occurrences of each digit
+            }
+        }
+    }
+
+    // Check for partial matches
+    for (int i = 0; i < 4; i++) {
+        if (!exact[i]) {                    // Only check if it's not an exact match
+            for (int n = 0; n < 4; n++) {
+                if (count[n] < 1) continue; // Skip if no more duplicates available
+                if (guess[i] == code[n] && !exact[n]) {  // Current guess isn't an exact match
+                    partial[i] = true;      // Mark partial match
+                    count[n]--;             // Reduce count to avoid double-counting
+                    break;                  // Stop checking after a partial is found
                 }
             }
         }
-        found = false;
     }
-    
-    for(int i = 0; i < 4; i++){
-        cout << "Exact i is: " << exact[i] << "Partial i is: " << partial[i];
-    }
-    cout << endl;
-    //and output the results
-    result(exact,partial);
-    return match;           //Return if all 4 match
+
+    // Output the results
+    result(exact, partial);
+    return match;  // Return if all 4 match
 }
 
 void result(bool exact[4], bool partial[4]){
