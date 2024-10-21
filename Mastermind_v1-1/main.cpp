@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         total++;                            //Add to the total
         if(match) tries = 0;                //We got it, end game
     }
-    if(tries == 0 && !match) {
+    if(!match) {
         cout << "This code was unbroken. Better luck next time!" << endl;
     }
     else {
@@ -148,7 +148,7 @@ bool check(const int code[], const int guess[], int size) {
                 if (guess[i] == code[n] && !exact[n]) {  // Current guess isn't an exact match
                     partial[i] = true;      // Mark partial match
                     count[n]--;             // Reduce count to avoid double-counting
-                    break;                  // Stop checking after a partial is found
+                    n = size;               // Stop checking after a partial is found
                 }
             }
         }
