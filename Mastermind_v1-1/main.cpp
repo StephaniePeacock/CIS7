@@ -97,7 +97,7 @@ void make(int guess[], int size, int choices) {
         if(input.length() == size){    //Correct length
             invalid = false;        //Good so far 
             for(int i = 0; i < size; i++){
-                if(input[i] >= '0' && input[i] <= (choices + '0')){  //Current char is a number & applicable
+                if(input[i] >= '0' && input[i] <= ((choices - 1) + '0')){  //Current char is a number & applicable
                     guess[i] = (input[i] - '0');                    //Set current guess to number
                 }
                 else {
